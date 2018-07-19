@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
 
+
             }
         });
         updateQuestion();
@@ -106,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShown(data);
+
+            if (mIsCheater) {
+                mQuestionBank[mCurrentIndex].setCheated(true);
+            }
         }
     }
 
@@ -159,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int messageResId = 0;
 
-        if (mIsCheater) {
+        if (mIsCheater || mQuestionBank[mCurrentIndex].isCheated()) {
             messageResId = R.string.judgement_toast;
         } else {
             if (userPressedTrue == answerIsTrue) {
