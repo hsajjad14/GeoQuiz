@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";//chapter 3
 
+    private boolean check = true;
+    private int right = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,8 +183,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateQuestion() {
-        int question = mQuestionBank[mCurrentIndex].getTextResId();
-        mQuestionTextView.setText(question);
+        int i = 0;
+        int total = mQuestionBank.length;
+        check = true;
+        while (i<total && check){
+            if(mQuestionBank[i].isAlreadyAnswered()){
+                if(mQuestionBank[i].isAnswerTrue()){
+                    check = true;
+                }
+
+            }else{
+                check = false;
+            }
+            i++;
+        }
+
+        if(check) {
+            double percent = (right*100)/total ;
+            Log.i("MainActivity", "Amount i got right "+Integer.toString(right));
+            Log.i("MainActivity", "total is "+Integer.toString(total));
+
+            Toast.makeText(this, "You answered " + percent + "% of questions correct", Toast.LENGTH_SHORT).show();
+        }else {
+            int question = mQuestionBank[mCurrentIndex].getTextResId();
+            mQuestionTextView.setText(question);
+            mTrueButton.setEnabled(!mQuestionBank[mCurrentIndex].isAlreadyAnswered());
+            mFalseButton.setEnabled(!mQuestionBank[mCurrentIndex].isAlreadyAnswered());
+        }
+        String str = String.valueOf(check);
+        Log.i("MainActivity","check is: "+str);
+
+
 
     }
 
@@ -190,18 +221,48 @@ public class MainActivity extends AppCompatActivity {
 
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int messageResId = 0;
+        check = true;
+        int total = mQuestionBank.length;
 
-        if (mIsCheater || mQuestionBank[mCurrentIndex].isCheated()) {
-            messageResId = R.string.judgement_toast;
-        } else {
-            if (userPressedTrue == answerIsTrue) {
-                messageResId = R.string.correct_toast;
-            } else {
-                messageResId = R.string.incorrect_toast;
+        mTrueButton.setEnabled(mQuestionBank[mCurrentIndex].isAlreadyAnswered());
+        mFalseButton.setEnabled(mQuestionBank[mCurrentIndex].isAlreadyAnswered());
+
+        int i = 0;
+        while (i<total && check){
+            if(mQuestionBank[i].isAlreadyAnswered()){
+                if(mQuestionBank[i].isAnswerTrue()){
+                    check = true;
+                }
+
+            }else{
+                check = false;
             }
+            i++;
         }
-        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+        if(check){
+            double percent = (right*100)/total ;
+            Toast.makeText(this, "You answered "+percent+"% of questions correct",Toast.LENGTH_SHORT).show();
+        }else {
+            if (mQuestionBank[mCurrentIndex].isAlreadyAnswered()) {
+                messageResId =  R.string.disabled_toast;
+            }else {
+                if (mIsCheater || mQuestionBank[mCurrentIndex].isCheated()) {
+                    messageResId = R.string.judgement_toast;
+                } else {
+                    if (userPressedTrue == answerIsTrue) {
+                        messageResId = R.string.correct_toast;
+                        right = right + 1;
 
+                    } else {
+                        messageResId = R.string.incorrect_toast;
+                    }
+                }
+            }
+
+            Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+            mQuestionBank[mCurrentIndex].setAlreadyAnswered(true);
+
+        }
     }
 
 }

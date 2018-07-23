@@ -4,6 +4,17 @@ public class Question {
     private int mTextResId;
     private boolean mAnswerTrue;
     private boolean mCheated;
+    private boolean mAlreadyAnswered = false;
+
+
+    public boolean isAlreadyAnswered() {
+        return mAlreadyAnswered;
+    }
+
+    public void setAlreadyAnswered(boolean alreadyAnswered) {
+        mAlreadyAnswered = alreadyAnswered;
+    }
+
 
 
     public boolean isCheated() {
@@ -13,9 +24,6 @@ public class Question {
     public void setCheated(boolean cheated) {
         mCheated = cheated;
     }
-
-
-
 
 
 
