@@ -42,6 +42,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        //add action listener to textview, so it goes to the next question when you click it
+        mQuestionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
 
         Log.d(TAG, "onCreate(Bundle) called");//chapter 3
         if (savedInstanceState != null) {
@@ -97,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             return;
