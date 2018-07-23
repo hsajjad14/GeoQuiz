@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mCheatButton;
     private static final int REQUEST_CODE_CHEAT = 0;
     private boolean mIsCheater;
+    private Button mPrevButton;
+
 
     private static final String IS_CHEAT = "cheat";
 
@@ -96,6 +98,22 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
 
+
+            }
+        });
+
+        mPrevButton = (Button) findViewById(R.id.previous_button);
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
+
+                if (mCurrentIndex < 0){
+                    mCurrentIndex = mCurrentIndex + mQuestionBank.length;
+                }//test
+
+                updateQuestion();
 
             }
         });
