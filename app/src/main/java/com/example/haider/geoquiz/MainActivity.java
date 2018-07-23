@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CHEAT = 0;
     private boolean mIsCheater;
     private Button mPrevButton;
+    private TextView mCheated;
 
 
     private static final String IS_CHEAT = "cheat";
@@ -39,12 +40,14 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean check = true;
     private int right = 0;
+    private int cheated = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mCheated = (TextView) findViewById(R.id.limted_cheats);
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
         //add action listener to textview, so it goes to the next question when you click it
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +142,15 @@ public class MainActivity extends AppCompatActivity {
 
             if (mIsCheater) {
                 mQuestionBank[mCurrentIndex].setCheated(true);
+                cheated = cheated-1;
+
+                String ch = "";
+                for (int i = 0; i<cheated;i++){
+                    ch += "X";
+                }
+                mCheated.setText(ch);
+
+
             }
         }
     }
@@ -227,7 +239,14 @@ public class MainActivity extends AppCompatActivity {
         mTrueButton.setEnabled(mQuestionBank[mCurrentIndex].isAlreadyAnswered());
         mFalseButton.setEnabled(mQuestionBank[mCurrentIndex].isAlreadyAnswered());
 
+        if (cheated == 0){
+            mCheatButton.setEnabled(false);
+        }else{
+            mCheatButton.setEnabled(true);
+        }
+
         int i = 0;
+        int correct = 0;
         while (i<total && check){
             if(mQuestionBank[i].isAlreadyAnswered()){
                 if(mQuestionBank[i].isAnswerTrue()){
@@ -237,17 +256,21 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 check = false;
             }
+
             i++;
         }
         if(check){
             double percent = (right*100)/total ;
             Toast.makeText(this, "You answered "+percent+"% of questions correct",Toast.LENGTH_SHORT).show();
+
         }else {
             if (mQuestionBank[mCurrentIndex].isAlreadyAnswered()) {
                 messageResId =  R.string.disabled_toast;
             }else {
                 if (mIsCheater || mQuestionBank[mCurrentIndex].isCheated()) {
                     messageResId = R.string.judgement_toast;
+                    if(userPressedTrue==answerIsTrue)
+                        right=right+1;
                 } else {
                     if (userPressedTrue == answerIsTrue) {
                         messageResId = R.string.correct_toast;

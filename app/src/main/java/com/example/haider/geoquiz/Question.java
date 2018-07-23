@@ -7,6 +7,7 @@ public class Question {
     private boolean mAlreadyAnswered = false;
 
 
+
     public boolean isAlreadyAnswered() {
         return mAlreadyAnswered;
     }
